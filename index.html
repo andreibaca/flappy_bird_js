@@ -22,6 +22,9 @@
     let pipeX = gameW;
     let pipeGap = 150;
 
+    let score = 0;
+    let bestScore = 0;
+
     let birdSize = 64;
 
     game.onclick = () => (birdSpeedY = -12);
@@ -52,7 +55,13 @@
         if (birdDied()){
             birdSpeedY = 0;
             birdY = 200;
+            bestScore = Math.max(bestScore, score)
+            score=0;
         }
+
+        context.fillStyle = "black";
+        context.fillText(score++,9,25);
+        context.fillText(`Best: ${bestScore}`,9,50);
 
     }, interval);
 

@@ -6,23 +6,54 @@
     <link rel="stylesheet" href="./css/style.css">
 </head>
 <body>
-<canvas id="game" width="400" height="400"></canvas>
+<canvas id="game" width="400" height="800"></canvas>
 <script>
+    const gameW = 400;
+    const gameH = 800;
     const game = document.getElementById('game');
     const context = game.getContext("2d");
     const bird = new Image();
     bird.src = './images/bird.png';
-    let birdX = birdDY = 0;
+    let birdX = 0;
+    let birdSpeedY = 0;
     let birdY = 200;
+    const pipeWidth = 24;
+    let pipeHeight = 200;
+    let pipeX = gameW;
+    let pipeGap = 150;
 
-    let interval = 24;
-    let birdSize = 74;
-    let canvasSize = 400;
+    let birdSize = 64;
+
+    game.onclick = () => (birdSpeedY = -12);
+
+    let interval = 25;
+
+    function birdDied(){
+        if (birdY > gameH || birdY < 0-birdSize) return true;
+        if ((birdY < pipeHeight || birdY > pipeHeight+pipeGap) && pipeX < birdX ) return true;
+    }
+
     setInterval(() => {
         context.fillStyle = 'skyblue';
-        context.fillRect(0,0,canvasSize,canvasSize);
-        birdY += (birdDY +=0.5);
+        context.fillRect(0,0,gameW,gameH);
+        birdSpeedY +=1;
+        birdY += birdSpeedY;
         context.drawImage(bird,birdX,birdY, birdSize, birdSize);
+        pipeX -=8;
+        if (pipeX < - pipeWidth){
+            pipeX = gameW;
+            pipeHeight = (gameH-pipeGap)*Math.random();
+        }
+
+        context.fillStyle = 'green';
+        context.fillRect(pipeX,0,pipeWidth,pipeHeight); //Draw top pipe
+        context.fillRect(pipeX,pipeHeight+pipeGap,pipeWidth, gameH); //Draw bottom pipe
+
+        if (birdDied()){
+            birdSpeedY = 0;
+            birdY = 200;
+        }
+
     }, interval);
 
 </script>

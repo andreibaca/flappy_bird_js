@@ -12,7 +12,7 @@
     const context = game.getContext("2d");
     const bird = new Image();
     bird.src = './images/bird.png';
-    let birdX = 0;
+    let birdX = birdDY = 0;
     let birdY = 200;
 
     let interval = 24;
@@ -21,6 +21,7 @@
     setInterval(() => {
         context.fillStyle = 'skyblue';
         context.fillRect(0,0,canvasSize,canvasSize);
+        birdY += (birdDY +=0.5);
         context.drawImage(bird,birdX,birdY, birdSize, birdSize);
     }, interval);
 

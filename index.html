@@ -9,15 +9,20 @@
 <canvas id="game" width="400" height="800"></canvas>
 <script>
     const gameW = 400;
-    const gameH = 800;
+    const gameH = 500;
     const game = document.getElementById('game');
-    const context = game.getContext("2d");
+    const ofScreenCanvas = document.createElement('canvas');
+    ofScreenCanvas.width = game.width;
+    ofScreenCanvas.height = gameH;
+    const ofScreenContext = ofScreenCanvas.getContext("2d");
+
+    const context = game.getContext("2d", { alpha: false });
     const bird = new Image();
     bird.src = './images/bird.png';
     let birdX = 0;
     let birdSpeedY = 0;
     let birdY = 200;
-    const pipeWidth = 24;
+    const pipeWidth = 40;
     let pipeHeight = 200;
     let pipeX = gameW;
     let pipeGap = 150;
@@ -36,21 +41,21 @@
         if ((birdY < pipeHeight || birdY > pipeHeight+pipeGap) && pipeX < birdX ) return true;
     }
 
-    setInterval(() => {
-        context.fillStyle = 'skyblue';
-        context.fillRect(0,0,gameW,gameH);
+    function draw() {
+        ofScreenContext.fillStyle = 'skyblue';
+        ofScreenContext.fillRect(0,0,gameW,gameH);
         birdSpeedY +=1;
         birdY += birdSpeedY;
-        context.drawImage(bird,birdX,birdY, birdSize, birdSize);
+        ofScreenContext.drawImage(bird,birdX,birdY, birdSize, birdSize);
         pipeX -=8;
         if (pipeX < - pipeWidth){
             pipeX = gameW;
             pipeHeight = (gameH-pipeGap)*Math.random();
         }
 
-        context.fillStyle = 'green';
-        context.fillRect(pipeX,0,pipeWidth,pipeHeight); //Draw top pipe
-        context.fillRect(pipeX,pipeHeight+pipeGap,pipeWidth, gameH); //Draw bottom pipe
+        ofScreenContext.fillStyle = 'green';
+        ofScreenContext.fillRect(pipeX,0,pipeWidth,pipeHeight); //Draw top pipe
+        ofScreenContext.fillRect(pipeX,pipeHeight+pipeGap,pipeWidth, gameH); //Draw bottom pipe
 
         if (birdDied()){
             birdSpeedY = 0;
@@ -59,11 +64,17 @@
             score=0;
         }
 
-        context.fillStyle = "black";
-        context.fillText(score++,9,25);
-        context.fillText(`Best: ${bestScore}`,9,50);
+        ofScreenContext.fillStyle = "black";
+        ofScreenContext.fillText(score++,9,25);
+        ofScreenContext.fillText(`Best: ${bestScore}`,9,50);
 
-    }, interval);
+        context.drawImage(ofScreenCanvas, 0, 0);
+
+        requestAnimationFrame(draw)
+
+    }
+
+    requestAnimationFrame(draw);
 
 </script>
 </body>

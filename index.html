@@ -6,8 +6,23 @@
     <link rel="stylesheet" href="./css/style.css">
 </head>
 <body>
-<canvas class="game"></canvas>
+<canvas id="game" width="400" height="400"></canvas>
 <script>
+    const game = document.getElementById('game');
+    const context = game.getContext("2d");
+    const bird = new Image();
+    bird.src = './images/bird.png';
+    let birdX = 0;
+    let birdY = 200;
+
+    let interval = 24;
+    let birdSize = 74;
+    let canvasSize = 400;
+    setInterval(() => {
+        context.fillStyle = 'skyblue';
+        context.fillRect(0,0,canvasSize,canvasSize);
+        context.drawImage(bird,birdX,birdY, birdSize, birdSize);
+    }, interval);
 
 </script>
 </body>

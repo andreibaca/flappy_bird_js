@@ -6,77 +6,7 @@
     <link rel="stylesheet" href="./css/style.css">
 </head>
 <body>
-<canvas id="game" width="400" height="800"></canvas>
-<script>
-    const gameW = 400;
-    const gameH = 500;
-    const game = document.getElementById('game');
-    const ofScreenCanvas = document.createElement('canvas');
-    ofScreenCanvas.width = game.width;
-    ofScreenCanvas.height = gameH;
-    const ofScreenContext = ofScreenCanvas.getContext("2d");
-
-    const context = game.getContext("2d", { alpha: false });
-    const bird = new Image();
-    bird.src = './images/bird.png';
-    let birdX = 0;
-    let birdSpeedY = 0;
-    let birdY = 200;
-    const pipeWidth = 40;
-    let pipeHeight = 200;
-    let pipeX = gameW;
-    let pipeGap = 150;
-
-    let score = 0;
-    let bestScore = 0;
-
-    let birdSize = 64;
-
-    game.onclick = () => (birdSpeedY = -12);
-
-    let interval = 25;
-
-    function birdDied(){
-        if (birdY > gameH || birdY < 0-birdSize) return true;
-        if ((birdY < pipeHeight || birdY > pipeHeight+pipeGap) && pipeX < birdX ) return true;
-    }
-
-    function draw() {
-        ofScreenContext.fillStyle = 'skyblue';
-        ofScreenContext.fillRect(0,0,gameW,gameH);
-        birdSpeedY +=1;
-        birdY += birdSpeedY;
-        ofScreenContext.drawImage(bird,birdX,birdY, birdSize, birdSize);
-        pipeX -=8;
-        if (pipeX < - pipeWidth){
-            pipeX = gameW;
-            pipeHeight = (gameH-pipeGap)*Math.random();
-        }
-
-        ofScreenContext.fillStyle = 'green';
-        ofScreenContext.fillRect(pipeX,0,pipeWidth,pipeHeight); //Draw top pipe
-        ofScreenContext.fillRect(pipeX,pipeHeight+pipeGap,pipeWidth, gameH); //Draw bottom pipe
-
-        if (birdDied()){
-            birdSpeedY = 0;
-            birdY = 200;
-            bestScore = Math.max(bestScore, score)
-            score=0;
-        }
-
-        ofScreenContext.fillStyle = "black";
-        ofScreenContext.fillText(score++,9,25);
-        ofScreenContext.fillText(`Best: ${bestScore}`,9,50);
-
-        context.drawImage(ofScreenCanvas, 0, 0);
-
-        requestAnimationFrame(draw)
-
-    }
-
-    requestAnimationFrame(draw);
-
-</script>
+<canvas id="game" width="100" height="200"></canvas>
+<script src="game.js"></script>
 </body>
-
 </html>

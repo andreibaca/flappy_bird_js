@@ -3,9 +3,14 @@ body{
     background: #111;
     text-align: center;
     transform: rotate(0deg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
 }
 
 #game{
     border: 2px solid white;
+    transform: scale(4);
+    image-rendering: pixelated;
 }

@@ -12,7 +12,20 @@ const pipe = {
     w:gameW/5,
     h:gameH/2,
     x:gameW,
-    gap:gameH/2
+    gap:gameH/2,
+    draw(ctx){
+        ctx.fillStyle = 'green';
+        ctx.fillRect(this.x,0,this.w,this.h); //Draw top pipe
+        ctx.fillRect(this.x,this.h+this.gap,this.w, gameH); //Draw bottom pipe
+    },
+    move(){
+        this.x -= 1;
+        if (this.x < - this.w){
+            this.x = gameW;
+            this.h = (gameH-this.gap)*Math.random();
+        }
+
+    }
 }
 
 let score = 0;
@@ -45,15 +58,10 @@ function draw() {
     bird.speedY += 0.25;
     bird.y = Math.floor(bird.speedY + bird.y);
     ofScreenContext.drawImage(bird.img, bird.x,bird.y, bird.size, bird.size);
-    pipe.x -= 1;
-    if (pipe.x < - pipe.w){
-        pipe.x = gameW;
-        pipe.h = (gameH-pipe.gap)*Math.random();
-    }
 
-    ofScreenContext.fillStyle = 'green';
-    ofScreenContext.fillRect(pipe.x,0,pipe.w,pipe.h); //Draw top pipe
-    ofScreenContext.fillRect(pipe.x,pipe.h+pipe.gap,pipe.w, gameH); //Draw bottom pipe
+    pipe.move();
+    pipe.draw(ofScreenContext);
+
 
     if (birdDied()){
         bird.speedY = 0;

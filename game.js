@@ -8,6 +8,7 @@ const ofScreenContext = ofScreenCanvas.getContext("2d");
 
 const context = game.getContext("2d", { alpha: false });
 
+
 const pipe = {
     w:gameW/5,
     h:gameH/2,
@@ -31,6 +32,7 @@ const pipe = {
 let score = 0;
 let bestScore = 0;
 
+
 const bird = {
     startY: gameH/2,
     x:0,
@@ -38,32 +40,41 @@ const bird = {
     speedY: 0,
     size: gameH/8,
     img: new Image(),
+    fly(){
+        this.speedY += 0.25; // Gravity acceleration
+        this.y = Math.floor(this.speedY + this.y);
+    },
+    draw(ctx){
+        ctx.drawImage(this.img, this.x,this.y, this.size, this.size);
+    },
+    init(){
+        this.img.src = './images/bird.png'; // define image
+        game.onclick = () => (this.speedY = -4); // fly up
+    },
+
+    died(){
+        if (this.y > gameH || this.y < 0-this.size) return true;
+        if ((this.y < pipe.h || this.y > pipe.h+pipe.gap) && pipe.x < (this.x+this.size) && (pipe.x+pipe.w) > this.x) return true;
+        return false;
+    }
 }
 
-bird.img.src = './images/bird.png';
 
-game.onclick = () => (bird.speedY = -4);
+bird.init();
 
-let interval = 25;
-
-function birdDied(){
-    if (bird.y > gameH || bird.y < 0-bird.size) return true;
-    if ((bird.y < pipe.h || bird.y > pipe.h+pipe.gap) && pipe.x < bird.x ) return true;
-    return false;
-}
 
 function draw() {
     ofScreenContext.fillStyle = 'skyblue';
     ofScreenContext.fillRect(0,0,gameW,gameH);
-    bird.speedY += 0.25;
-    bird.y = Math.floor(bird.speedY + bird.y);
-    ofScreenContext.drawImage(bird.img, bird.x,bird.y, bird.size, bird.size);
+
+    bird.fly();
+    bird.draw(ofScreenContext);
 
     pipe.move();
     pipe.draw(ofScreenContext);
 
 
-    if (birdDied()){
+    if (bird.died()){
         bird.speedY = 0;
         bird.y = bird.startY;
         bestScore = Math.max(bestScore, score)

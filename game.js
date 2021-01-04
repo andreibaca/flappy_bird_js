@@ -8,10 +8,12 @@ const ofScreenContext = ofScreenCanvas.getContext("2d");
 
 const context = game.getContext("2d", { alpha: false });
 
-const pipeWidth = gameW/5;
-let pipeHeight = gameH/2;
-let pipeX = gameW;
-let pipeGap = gameH/2;
+const pipe = {
+    w:gameW/5,
+    h:gameH/2,
+    x:gameW,
+    gap:gameH/2
+}
 
 let score = 0;
 let bestScore = 0;
@@ -33,7 +35,7 @@ let interval = 25;
 
 function birdDied(){
     if (bird.y > gameH || bird.y < 0-bird.size) return true;
-    if ((bird.y < pipeHeight || bird.y > pipeHeight+pipeGap) && pipeX < bird.x ) return true;
+    if ((bird.y < pipe.h || bird.y > pipe.h+pipe.gap) && pipe.x < bird.x ) return true;
     return false;
 }
 
@@ -43,15 +45,15 @@ function draw() {
     bird.speedY += 0.25;
     bird.y = Math.floor(bird.speedY + bird.y);
     ofScreenContext.drawImage(bird.img, bird.x,bird.y, bird.size, bird.size);
-    pipeX -= 1;
-    if (pipeX < - pipeWidth){
-        pipeX = gameW;
-        pipeHeight = (gameH-pipeGap)*Math.random();
+    pipe.x -= 1;
+    if (pipe.x < - pipe.w){
+        pipe.x = gameW;
+        pipe.h = (gameH-pipe.gap)*Math.random();
     }
 
     ofScreenContext.fillStyle = 'green';
-    ofScreenContext.fillRect(pipeX,0,pipeWidth,pipeHeight); //Draw top pipe
-    ofScreenContext.fillRect(pipeX,pipeHeight+pipeGap,pipeWidth, gameH); //Draw bottom pipe
+    ofScreenContext.fillRect(pipe.x,0,pipe.w,pipe.h); //Draw top pipe
+    ofScreenContext.fillRect(pipe.x,pipe.h+pipe.gap,pipe.w, gameH); //Draw bottom pipe
 
     if (birdDied()){
         bird.speedY = 0;

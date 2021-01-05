@@ -1,22 +1,34 @@
 const game = {
     canvas:document.getElementById('game'),
-    ctx:this.canvas.getContext("2d", { alpha: false }),
+    ctx:null,
     vCanvas:document.createElement('canvas'),
-    vCtx: this.vCanvas.getContext("2d", { alpha: false }),
+    vCtx: null,
     w: 100,
     h:160,
     init(){
+        this.ctx = this.canvas.getContext("2d", { alpha: false });
+        this.vCtx = this.vCanvas.getContext("2d", { alpha: false });
         this.vCanvas.width = this.w;
         this.vCanvas.height = this.h;
 
         this.ctx.fillStyle = '#6d4242';
         this.ctx.fillRect(0,0,100,200);
+    },
+    reset(){
+        bird.speedY = 0;
+        bird.y = bird.startY;
+        bestScore = Math.max(bestScore, score);
+        pipe.x = this.w;
+        score=0;
+    },
+    drawBG(){
+        this.vCtx.fillStyle = 'skyblue';
+        this.vCtx.fillRect(0,0,this.w,this.h);
     }
+
 }
 
 game.init();
-
-const context = game.getContext("2d", { alpha: false });
 
 
 const pipe = {
@@ -59,7 +71,7 @@ const bird = {
     },
     init(){
         this.img.src = './images/bird.png'; // define image
-        game.onclick = () => (this.speedY = -4); // fly up
+        document.onclick = () => (this.speedY = -4); // fly up
     },
 
     died(){
@@ -74,8 +86,8 @@ bird.init();
 
 
 function draw() {
-    game.vCtx.fillStyle = 'skyblue';
-    game.vCtx.fillRect(0,0,game.w,game.h);
+
+    game.drawBG()
 
     bird.fly();
     bird.draw(game.vCtx);
@@ -85,17 +97,14 @@ function draw() {
 
 
     if (bird.died()){
-        bird.speedY = 0;
-        bird.y = bird.startY;
-        bestScore = Math.max(bestScore, score)
-        score=0;
+        game.reset();
     }
 
     game.vCtx.fillStyle = "black";
     game.vCtx.fillText(score++,9,25);
     game.vCtx.fillText(`Best: ${bestScore}`,9,50);
 
-    context.drawImage(ofScreenCanvas, 0, 0);
+    game.ctx.drawImage(game.vCanvas, 0, 0);
 
     requestAnimationFrame(draw)
 

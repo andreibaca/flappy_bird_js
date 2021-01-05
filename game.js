@@ -17,13 +17,16 @@ const game = {
     reset(){
         bird.speedY = 0;
         bird.y = bird.startY;
-        bestScore = Math.max(bestScore, score);
         pipe.x = this.w;
-        score=0;
+        score.setBest();
+
     },
     drawBG(){
         this.vCtx.fillStyle = 'skyblue';
         this.vCtx.fillRect(0,0,this.w,this.h);
+    },
+    renderFinal(){
+        this.ctx.drawImage(this.vCanvas, 0, 0);
     }
 
 }
@@ -46,13 +49,29 @@ const pipe = {
         if (this.x < - this.w){
             this.x = game.w;
             this.h = (game.h-this.gap)*Math.random();
+            score.increase();
         }
 
     }
 }
 
-let score = 0;
-let bestScore = 0;
+
+const score = {
+    current:0,
+    best:0,
+    increase(){
+        this.current++;
+    },
+    setBest(){
+        this.best = Math.max(this.best, this.current);
+        this.current=0;
+    },
+    draw(ctx){
+        ctx.fillStyle = "black";
+        ctx.fillText(this.current,9,25);
+        ctx.fillText(`Best: ${this.best}`,9,50);
+    }
+}
 
 
 const bird = {
@@ -100,11 +119,9 @@ function draw() {
         game.reset();
     }
 
-    game.vCtx.fillStyle = "black";
-    game.vCtx.fillText(score++,9,25);
-    game.vCtx.fillText(`Best: ${bestScore}`,9,50);
+    score.draw(game.vCtx);
 
-    game.ctx.drawImage(game.vCanvas, 0, 0);
+    game.renderFinal();
 
     requestAnimationFrame(draw)
 

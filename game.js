@@ -1,29 +1,39 @@
-const gameW = 100;
-const gameH = 160;
-const game = document.getElementById('game');
-const ofScreenCanvas = document.createElement('canvas');
-ofScreenCanvas.width = game.width;
-ofScreenCanvas.height = gameH;
-const ofScreenContext = ofScreenCanvas.getContext("2d");
+const game = {
+    canvas:document.getElementById('game'),
+    ctx:this.canvas.getContext("2d", { alpha: false }),
+    vCanvas:document.createElement('canvas'),
+    vCtx: this.vCanvas.getContext("2d", { alpha: false }),
+    w: 100,
+    h:160,
+    init(){
+        this.vCanvas.width = this.w;
+        this.vCanvas.height = this.h;
+
+        this.ctx.fillStyle = '#6d4242';
+        this.ctx.fillRect(0,0,100,200);
+    }
+}
+
+game.init();
 
 const context = game.getContext("2d", { alpha: false });
 
 
 const pipe = {
-    w:gameW/5,
-    h:gameH/2,
-    x:gameW,
-    gap:gameH/2,
+    w:game.w/5,
+    h:game.h/2,
+    x:game.w,
+    gap:game.h/2,
     draw(ctx){
         ctx.fillStyle = 'green';
         ctx.fillRect(this.x,0,this.w,this.h); //Draw top pipe
-        ctx.fillRect(this.x,this.h+this.gap,this.w, gameH); //Draw bottom pipe
+        ctx.fillRect(this.x,this.h+this.gap,this.w, game.h); //Draw bottom pipe
     },
     move(){
         this.x -= 1;
         if (this.x < - this.w){
-            this.x = gameW;
-            this.h = (gameH-this.gap)*Math.random();
+            this.x = game.w;
+            this.h = (game.h-this.gap)*Math.random();
         }
 
     }
@@ -34,11 +44,11 @@ let bestScore = 0;
 
 
 const bird = {
-    startY: gameH/2,
+    startY: game.h/2,
     x:0,
-    y: gameH/2,
+    y: game.h/2,
     speedY: 0,
-    size: gameH/8,
+    size: game.h/8,
     img: new Image(),
     fly(){
         this.speedY += 0.25; // Gravity acceleration
@@ -53,7 +63,7 @@ const bird = {
     },
 
     died(){
-        if (this.y > gameH || this.y < 0-this.size) return true;
+        if (this.y > game.h || this.y < 0-this.size) return true;
         if ((this.y < pipe.h || this.y > pipe.h+pipe.gap) && pipe.x < (this.x+this.size) && (pipe.x+pipe.w) > this.x) return true;
         return false;
     }
@@ -64,14 +74,14 @@ bird.init();
 
 
 function draw() {
-    ofScreenContext.fillStyle = 'skyblue';
-    ofScreenContext.fillRect(0,0,gameW,gameH);
+    game.vCtx.fillStyle = 'skyblue';
+    game.vCtx.fillRect(0,0,game.w,game.h);
 
     bird.fly();
-    bird.draw(ofScreenContext);
+    bird.draw(game.vCtx);
 
     pipe.move();
-    pipe.draw(ofScreenContext);
+    pipe.draw(game.vCtx);
 
 
     if (bird.died()){
@@ -81,9 +91,9 @@ function draw() {
         score=0;
     }
 
-    ofScreenContext.fillStyle = "black";
-    ofScreenContext.fillText(score++,9,25);
-    ofScreenContext.fillText(`Best: ${bestScore}`,9,50);
+    game.vCtx.fillStyle = "black";
+    game.vCtx.fillText(score++,9,25);
+    game.vCtx.fillText(`Best: ${bestScore}`,9,50);
 
     context.drawImage(ofScreenCanvas, 0, 0);
 

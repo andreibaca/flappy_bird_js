@@ -15,8 +15,8 @@ const game = {
         this.ctx.fillRect(0,0,100,200);
     },
     reset(){
-        bird.speedY = 0;
-        bird.y = bird.startY;
+
+        bird.reset();
         pipe.x = this.w;
         score.setBest();
 
@@ -31,7 +31,7 @@ const game = {
 
 }
 
-game.init();
+
 
 
 const pipe = {
@@ -75,31 +75,72 @@ const score = {
 
 
 const bird = {
-    startY: game.h/2,
-    x:0,
-    y: game.h/2,
-    speedY: 0,
-    size: game.h/8,
-    img: new Image(),
+    startY:  game.h/2,
+    x:       0,
+    y:       game.h/2,
+    speedY:  0,
+    rotate: 0,
+    currentRotation: 0,
+    size:    game.h/8,
+    img:     new Image(),
+    canvas:  document.createElement('canvas'),
+    birdCtx: null,
     fly(){
-        this.speedY += 0.25; // Gravity acceleration
-        this.y = Math.floor(this.speedY + this.y);
+        if (this.x < 20) this.x++;
+        else {
+            this.speedY += 0.25; // Gravity acceleration
+            this.y = Math.floor(this.speedY + this.y);
+            if (this.rotate < 3) this.rotate += 1.5;
+        }
     },
     draw(ctx){
-        ctx.drawImage(this.img, this.x,this.y, this.size, this.size);
+        this.birdCtx.clearRect(0,0,this.size, this.size);
+        this.rotateBird();
+        this.birdCtx.drawImage(this.img, 0, 0, this.size, this.size);
+        ctx.drawImage(this.canvas, this.x,this.y);
     },
     init(){
+        this.x = -this.size;
         this.img.src = './images/bird.png'; // define image
-        document.onclick = () => (this.speedY = -4); // fly up
-    },
+        this.canvas.width = this.size;
+        this.canvas.height = this.size;
+        this.birdCtx = this.canvas.getContext("2d");
 
+        document.onclick = () => {
+            if (this.x < 20) return;
+            this.speedY = -4; // fly up
+            this.rotate = -20;
+
+        };
+    },
+    rotateBird(){
+        this.birdCtx.translate(this.size/2,this.size/2);
+        this.birdCtx.rotate(this.rotate*Math.PI/180);
+        this.currentRotation += this.rotate;
+        console.log(this.currentRotation);
+        if (this.currentRotation < -50 ) {
+            this.rotate = 0;
+        }
+        this.birdCtx.translate(-this.size/2,-this.size/2);
+    },
     died(){
         if (this.y > game.h || this.y < 0-this.size) return true;
         if ((this.y < pipe.h || this.y > pipe.h+pipe.gap) && pipe.x < (this.x+this.size) && (pipe.x+pipe.w) > this.x) return true;
         return false;
+    },
+    reset(){
+        this.birdCtx.setTransform(1,0,0,1,0,0);
+        this.rotate = 0;
+        this.currentRotation = 0;
+        this.x = -this.size;
+        this.y = this.startY;
+        this.speedY = 0;
     }
 }
 
+
+
+game.init();
 
 bird.init();
 

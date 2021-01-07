@@ -95,6 +95,7 @@ const bird = {
     },
     draw(ctx){
         this.birdCtx.clearRect(0,0,this.size, this.size);
+        // this.birdCtx.fillRect(0,0,this.size, this.size);
         this.rotateBird();
         this.birdCtx.drawImage(this.img, 0, 0, this.size, this.size);
         ctx.drawImage(this.canvas, this.x,this.y);
@@ -124,8 +125,9 @@ const bird = {
         this.birdCtx.translate(-this.size/2,-this.size/2);
     },
     died(){
-        if (this.y > game.h || this.y < 0-this.size) return true;
-        if ((this.y < pipe.h || this.y > pipe.h+pipe.gap) && pipe.x < (this.x+this.size) && (pipe.x+pipe.w) > this.x) return true;
+        let margin = this.size/2;
+        if (this.y+margin > game.h || this.y < 0-margin) return true;
+        if ((this.y+margin < pipe.h || this.y+margin > pipe.h+pipe.gap) && pipe.x < (this.x+margin) && (pipe.x+pipe.w) > this.x) return true;
         return false;
     },
     reset(){

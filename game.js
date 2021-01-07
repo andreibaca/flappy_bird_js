@@ -45,7 +45,7 @@ const pipe = {
         ctx.fillRect(this.x,this.h+this.gap,this.w, game.h); //Draw bottom pipe
     },
     move(){
-        this.x -= 1;
+        if (bird.x > 10) this.x -= 1;
         if (this.x < - this.w){
             this.x = game.w;
             this.h = (game.h-this.gap)*Math.random();

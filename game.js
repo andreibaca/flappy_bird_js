@@ -5,13 +5,14 @@ const game = {
     vCtx: null,
     w: 100,
     h:160,
+    groundColor: '#6d4242',
     init(){
         this.ctx = this.canvas.getContext("2d", { alpha: false });
         this.vCtx = this.vCanvas.getContext("2d", { alpha: false });
         this.vCanvas.width = this.w;
         this.vCanvas.height = this.h;
 
-        this.ctx.fillStyle = '#6d4242';
+        this.ctx.fillStyle = this.groundColor;
         this.ctx.fillRect(0,0,100,200);
     },
     reset(){
@@ -67,9 +68,11 @@ const score = {
         this.current=0;
     },
     draw(ctx){
-        ctx.fillStyle = "black";
-        ctx.fillText(this.current,9,25);
-        ctx.fillText(`Best: ${this.best}`,9,50);
+        ctx.fillStyle =  game.groundColor,
+        ctx.fillRect(0,160,game.w,50);
+        ctx.fillStyle = "white";
+        ctx.fillText(this.current,9,175);
+        ctx.fillText(`Best: ${this.best}`,9, 190);
     }
 }
 
@@ -162,7 +165,7 @@ function draw() {
         game.reset();
     }
 
-    score.draw(game.vCtx);
+    score.draw(game.ctx);
 
     game.renderFinal();
 
